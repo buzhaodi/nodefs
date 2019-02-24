@@ -8,12 +8,26 @@ const devMiddleware = require('./middleware/devMiddleware');
 // 在内存中编译的插件，不写入磁盘来提高性能
 // const hotMiddleware = require('./middleware/hotMiddleware');
 const app = new Koa();
+var convert = require('xml-js');
+const fs = require('fs');
+
+
 
 
 
 
 router.get('/home', async (ctx, next) => {
-    ctx.response.body = '<h1>HOME page</h1>'
+	data = fs.readFileSync(__dirname + '/vars.xml', 'utf8');
+	// console.log(data);
+
+	var result1 = convert.xml2json(data, {compact: false, spaces: 4});
+	var result2 = convert.json2xml(result1, {compact: false, spaces: 4});
+	// fs.readFile(__dirname + '/vars.xml', function(err, data) {
+	// 	var result1 = convert.xml2json(data, {compact: true, spaces: 4});
+	// 	var result2 = convert.xml2json(data, {compact: false, spaces: 4});
+	// });
+// console.log(result1, '\n', result2);
+    ctx.response.body = result1+ '<br>'+ result2;
 })
 
 router.get('/404', async (ctx, next) => {
